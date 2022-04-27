@@ -1,3 +1,11 @@
+/**
+ * Name: Sahil Gathe	
+ * ID: A16840774
+ * Email: sgathe@ucsd.edu
+ * Sources used: Tutors, Zybooks, and Lecture Slides
+ * 
+ * This file creates a linked list and holds the methods to interact with said linked list
+ */
 import java.util.AbstractList;
 
 
@@ -78,48 +86,186 @@ public class MyLinkedList<E> extends AbstractList<E> {
     //  Implementation of the MyLinkedList Class
     /** Only 0-argument constructor is defined */
     public MyLinkedList() {
-        /* Add your implementation here */
-        // TODO
+        this.size = 0;
+        this.head = new Node(null);
+        this.tail = new Node(null);
+        head.setNext(tail);
+        tail.setPrev(head);
     }
 
+    /**
+     * @returns the current size of the arraylist 
+     */
     @Override
     public int size() {
-        // need to implement the size method
-        return 0; // TODO
+        return this.size; 
     }
 
+    /**
+     * given a index argument 
+     * @returns the vaule of the node in that positon in that index
+     * in the linked list. 
+     */
     @Override
     public E get(int index) {
-        return (E) null;  // TODO
+        if(index > size || index < 0){
+            throw new IndexOutOfBoundsException("get index out of bounds");
+        }
+        else{
+            Node tempnode = getNth(index);
+            return tempnode.getElement();
+        }
     }
 
+    /**
+     * creates a new node object 
+     * @param data will be the value of the node
+     * @param Index will be the index of the node
+     * @returns true if node is created
+     * @throws NullPointerExcption if data is null 
+     */
     @Override
     public void add(int index, E data) {
-        /* Add your implementation here */
-        // TODO
+        size++;
+       if(data == null){
+           throw new NullPointerException("null input into add");
+       }
+       else if(index >= size || index < 0){
+            throw new IndexOutOfBoundsException("add index out of bounds");
+       }
+       else{
+            Node tempNode = getNth(index);
+            Node newNode = new Node(data);
+            if(index == 0){
+                newNode.setPrev(head);
+                newNode.setNext(head.next);
+                head.getNext().setPrev(newNode);
+                head.setNext(newNode);
+            }
+            else if(index == size -1){
+                tail.getPrev().setNext(newNode);
+                newNode.setPrev(tail.getPrev());
+                tail.setPrev(newNode);
+                newNode.setNext(tail);
+            }
+            else{
+                tempNode.getPrev().setNext(newNode);
+                newNode.setPrev(tempNode.getPrev());
+                tempNode.setPrev(newNode);
+                newNode.setNext(tempNode);
+                tempNode.getNext().setPrev(tempNode);
+            }
+       }
     }
 
+    /**
+     * creates a new node 
+     * @param data as the node value
+     * @return true if node is created 
+     * @throws NullPointerExption if data is null
+     */
     public boolean add(E data) {
-        return true; // TODO
+        if(data == null){
+            throw new NullPointerException("a null data point is being added");
+        }else{
+            size++;
+            Node addNode = new Node(data);
+            tail.prev.setNext(addNode);
+            addNode.setPrev(tail.prev);
+            addNode.setNext(tail);
+            tail.setPrev(addNode);
+            return true;
+        }
     }
 
+    /**
+     * replaces a given index
+     * @param index with a value
+     * @param data
+     * @return the previously stored value
+     */
     public E set(int index, E data) {
-        return (E) null; // TODO
+        if(data == null){
+            throw new NullPointerException("set data is null");
+        }
+        else if(index > size || index < 0){
+            throw new IndexOutOfBoundsException("set index out of bounds");
+        }
+        else{
+            Node tempNode = getNth(index);
+
+            Node replacemntNode = new Node(data);
+            replacemntNode.setNext(tempNode.next);
+            replacemntNode.setPrev(tempNode.prev);
+            tempNode.getNext().setPrev(replacemntNode);
+            tempNode.getPrev().setNext(replacemntNode);
+            return tempNode.data;
+        }
     }
 
+    /**
+     * removes the node at a give
+     * @param index
+     */
     public E remove(int index) {
-        return (E) null; // TODO
+        if(index >= size || index < 0){
+            throw new IndexOutOfBoundsException("remove index out of bounds");
+        }
+        else if(index == 0){
+            Node tempNode = head.getNext();
+            head.setNext(tempNode.getNext());
+            tempNode.getNext().setPrev(head);
+
+            size--;
+            return tempNode.getElement();
+        }
+        else{
+            Node tempNode = getNth(index);
+
+            tempNode.getNext().setPrev(tempNode.getPrev());
+            tempNode.getPrev().setNext(tempNode.getNext());
+            size--;
+            return tempNode.getElement();
+        }
     }
 
+    /**
+     * removes all the node in the arraylist
+     */
     public void clear() {
-        /* Add your implementation here */
+        head.setNext(tail);
+        tail.setPrev(head);
+        size = 0;
     }
 
+    /**
+     * @return true if the size is 0
+     */
     public boolean isEmpty() {
-        return true;  // TODO
+        if(size > 0){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
+    /**
+     * takes in 
+     * @param index 
+     * @return the node at index
+     */
     protected Node getNth(int index) {
-        return (Node) null;  // TODO
+        if(index < 0 || index >= size){
+            throw new IndexOutOfBoundsException("get index out of bounds");
+        }
+        else{
+            Node tempNode = head;
+            for(int i = 0; i <= index; i++){
+                tempNode = tempNode.getNext();
+            }
+
+            return tempNode;
+        }
     }
 }
